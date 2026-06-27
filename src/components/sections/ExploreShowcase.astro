@@ -1,0 +1,195 @@
+---
+// EXPLORE SHOWCASE — dark band. Left: narrative (compass eyebrow, headline,
+// lead, numbered flow steps, 7-component catalog chips). Right: a mocked
+// Explorer surface card (composer, striped hero, summary, branch chips, place
+// mosaic, itinerary handoff). Port of the "EXPLORE SHOWCASE" block in
+// `BayHop Site.dc.html`.
+import {
+  exploreFlow,
+  exploreCatalog,
+  exploreBranches,
+  explorePlaces,
+} from "../../data/site";
+---
+
+<section id="explore" class="bg-ink text-dark-text">
+  <div class="mx-auto max-w-[1180px] px-[32px] py-[84px]">
+    <div class="grid grid-cols-1 items-start gap-[56px] lg:grid-cols-2">
+
+      <!-- left: narrative -->
+      <div>
+        <div
+          class="mb-[20px] inline-flex items-center gap-[9px] rounded-full border border-[rgba(142,131,240,0.25)] bg-[rgba(90,75,224,0.16)] px-[13px] py-[7px]"
+        >
+          <span class="text-[15px]" aria-hidden="true">🧭</span>
+          <span class="font-mono text-[11px] font-semibold uppercase tracking-[.6px] text-[#B7AEFA]">
+            Explore · generative UI
+          </span>
+        </div>
+        <h2
+          class="mt-0 mb-[16px] font-display text-[42px] font-bold leading-[1.06] tracking-[-1px]"
+        >
+          Turn a vibe into a generated mini-adventure.
+        </h2>
+        <p
+          class="mt-0 mb-[30px] max-w-[520px] text-[17px] leading-[1.6] text-dark-muted"
+        >
+          Ask <i>"Plan a playful Oakland food crawl"</i> and the Explore prompt drives
+          the model to compose a whole surface — a hero, a summary, a mosaic of real
+          places, branches to drill deeper, and an itinerary you can route. Seven
+          components, assembled on demand.
+        </p>
+
+        <div class="mb-[30px] flex flex-col gap-[16px]">
+          {
+            exploreFlow.map((f) => (
+              <div class="flex items-start gap-[14px]">
+                <div class="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-[9px] border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.06)] font-mono text-[12px] font-semibold text-[#B7AEFA]">
+                  {f.n}
+                </div>
+                <div>
+                  <div class="mb-[3px] font-display text-[16px] font-semibold tracking-[-.2px]">
+                    {f.h}
+                  </div>
+                  <div class="text-[14px] leading-[1.55] text-[#9AA2AA]">{f.t}</div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div
+          class="mb-[12px] font-mono text-[11px] font-semibold uppercase tracking-[.5px] text-dark-faint"
+        >
+          The 7-component catalog · explore_catalog.dart
+        </div>
+        <div class="flex flex-wrap gap-[8px]">
+          {
+            exploreCatalog.map((c) => (
+              <span class="rounded-[8px] border border-[rgba(142,131,240,0.2)] bg-[rgba(90,75,224,0.14)] px-[11px] py-[6px] font-mono text-[12px] font-semibold text-dark-lilac">
+                {c}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- right: mocked Explorer surface -->
+      <div
+        class="rounded-[26px] p-[18px]"
+        style="background:linear-gradient(180deg,#EDF1F3,#E4EAED); box-shadow:0 30px 70px rgba(0,0,0,.4);"
+      >
+        <div class="overflow-hidden rounded-[18px] bg-white font-sans text-ink">
+
+          <!-- composer -->
+          <div class="px-[16px] pt-[16px] pb-[12px]">
+            <div class="flex items-center gap-[10px] rounded-[14px] bg-[#F1F4F6] px-[14px] py-[12px]">
+              <div class="ai-gradient flex h-[26px] w-[26px] flex-none items-center justify-center rounded-[8px] animate-bh-spark">
+                <svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 1l1.6 4.4L14 7l-4.4 1.6L8 13l-1.6-4.4L2 7l4.4-1.6z" fill="#fff"></path>
+                </svg>
+              </div>
+              <div class="flex-1 text-[14px] font-semibold text-ink">
+                Plan a playful Oakland food crawl
+              </div>
+            </div>
+          </div>
+
+          <!-- hero -->
+          <div
+            class="relative mx-[16px] mb-[14px] h-[118px] overflow-hidden rounded-[16px]"
+            style="background:repeating-linear-gradient(135deg,#D9C5F0,#D9C5F0 11px,#CDB6EC 11px,#CDB6EC 22px);"
+          >
+            <div
+              class="absolute inset-0"
+              style="background:linear-gradient(180deg,rgba(22,25,28,0),rgba(22,25,28,.62));"
+              aria-hidden="true"
+            >
+            </div>
+            <div class="absolute bottom-[13px] left-[16px] right-[16px]">
+              <div class="mb-[4px] font-mono text-[9.5px] font-semibold uppercase tracking-[.6px] text-[#EAD9FF]">
+                Hero · Oakland
+              </div>
+              <div class="font-display text-[20px] font-bold tracking-[-.4px] text-white">
+                A playful Oakland food crawl
+              </div>
+            </div>
+          </div>
+
+          <!-- summary -->
+          <div class="mx-[16px] mb-[14px] text-[13px] leading-[1.55] text-slate-600">
+            Four hops from Uptown to Jack London Square — snacks, a rooftop, and
+            dessert — all reachable on the <b class="text-ink">12th St</b> BART hub and
+            the <b class="text-ink">B / NL</b> bus.
+          </div>
+
+          <!-- branches -->
+          <div class="mx-[16px] mb-[14px]">
+            <div class="mb-[8px] font-mono text-[9.5px] font-semibold uppercase tracking-[.5px] text-slate-300">
+              Branch the plan
+            </div>
+            <div class="flex flex-wrap gap-[7px]">
+              {
+                exploreBranches.map((b) => (
+                  <span class="rounded-full border border-[rgba(90,75,224,0.16)] bg-[rgba(90,75,224,0.09)] px-[11px] py-[6px] text-[12.5px] font-semibold text-brand-purple">
+                    {b}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- mosaic of places -->
+          <div class="mx-[16px] mb-[14px]">
+            <div class="mb-[8px] font-mono text-[9.5px] font-semibold uppercase tracking-[.5px] text-slate-300">
+              Place mosaic · Google Places
+            </div>
+            <div class="flex flex-col gap-[9px]">
+              {
+                explorePlaces.map((p) => (
+                  <div class="flex items-center gap-[11px] rounded-[13px] bg-[#F7F9FA] p-[9px]">
+                    <div
+                      class="flex h-[52px] w-[52px] flex-none items-center justify-center rounded-[10px]"
+                      style="background:repeating-linear-gradient(135deg,#E2E7EA,#E2E7EA 6px,#D7DDE1 6px,#D7DDE1 12px);"
+                    >
+                      <span class="font-mono text-[8px] text-slate-300">photo</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-[14px] font-bold text-ink">{p.name}</div>
+                      <div class="mt-[3px] flex items-center gap-[8px] text-[11.5px] text-slate-400">
+                        <span class="font-bold text-[#F4922A]">★ {p.rating}</span>
+                        <span>·</span>
+                        <span>{p.price}</span>
+                        <span>·</span>
+                        <span>{p.hours}</span>
+                      </div>
+                    </div>
+                    <div class="ai-gradient flex h-[30px] w-[30px] flex-none items-center justify-center rounded-[9px] text-[18px] font-semibold text-white">
+                      +
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- itinerary handoff -->
+          <div class="mx-[16px] mb-[16px] flex items-center justify-between rounded-[14px] bg-ink px-[15px] py-[13px]">
+            <div>
+              <div class="font-mono text-[10px] font-semibold uppercase tracking-[.5px] text-dark-purple">
+                Your itinerary · 4 stops
+              </div>
+              <div class="mt-[2px] text-[13px] font-semibold text-dark-text">
+                Saved locally · handoff to Transit
+              </div>
+            </div>
+            <div class="ai-gradient flex items-center gap-[7px] whitespace-nowrap rounded-[10px] px-[13px] py-[9px] text-[12.5px] font-semibold text-white">
+              Route in order →
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

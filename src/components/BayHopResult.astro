@@ -1,0 +1,64 @@
+---
+// Generative result dispatcher: routes a parsed query to the matching card.
+// Optionally renders the "YOU ASKED" routing-context header above the card.
+// Port of BayHopResult.dc.html. Cards render with their own default data.
+import TripPlanCard from "./TripPlanCard.astro";
+import DeparturesCard from "./DeparturesCard.astro";
+import ServiceAlertCard from "./ServiceAlertCard.astro";
+
+interface Props {
+  variant?: "trip" | "departures" | "alert";
+  showQuery?: boolean;
+  query?: string;
+}
+const { variant = "trip", showQuery = true, query } = Astro.props;
+
+type Kind = "trip" | "departures" | "alert";
+const DEFAULT_QUERY: Record<Kind, string> = {
+  trip: "Downtown Berkeley to SFO",
+  departures: "Next trains from Embarcadero",
+  alert: "Is the Yellow Line delayed?",
+};
+const KIND_LABEL: Record<Kind, string> = {
+  trip: "TRIP PLAN",
+  departures: "LIVE BOARD",
+  alert: "SERVICE",
+};
+
+const kind: Kind = variant;
+const queryText = query ?? DEFAULT_QUERY[kind] ?? "";
+const kindLabel = KIND_LABEL[kind] || "RESULT";
+---
+
+<div class="w-full font-sans">
+  {
+    showQuery && (
+      <div
+        class="mb-[14px] flex items-center gap-[10px] rounded-[16px] border border-white/80 bg-white/70 px-[13px] py-[11px]"
+        style="box-shadow:0 4px 14px rgba(18,28,38,.08);"
+      >
+        <div
+          class="flex h-7 w-7 flex-none items-center justify-center rounded-[9px]"
+          style="background:linear-gradient(135deg,#0091D2,#5A4BE0);"
+        >
+          <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M8 1l1.6 4.4L14 7l-4.4 1.6L8 13l-1.6-4.4L2 7l4.4-1.6z" fill="#fff" />
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="text-[10px] font-bold tracking-[.5px] text-slate-300">YOU ASKED</div>
+          <div class="overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-semibold text-ink">
+            {queryText}
+          </div>
+        </div>
+        <div class="flex-none rounded-full bg-brand-purple/10 px-[9px] py-1 font-sans text-[10px] font-bold tracking-[.4px] text-brand-purple">
+          {kindLabel}
+        </div>
+      </div>
+    )
+  }
+
+  {kind === "trip" && <TripPlanCard />}
+  {kind === "departures" && <DeparturesCard />}
+  {kind === "alert" && <ServiceAlertCard />}
+</div>

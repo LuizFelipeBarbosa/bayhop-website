@@ -1,0 +1,61 @@
+---
+// Thesis / before-after block: a normal chat app's wall-of-text vs. a BayHop
+// GenUI card. Port of the THESIS block in `BayHop Site.dc.html`.
+import BayHopResult from "../BayHopResult.astro";
+---
+
+<section class="mx-auto max-w-[1180px] px-[32px] pt-[46px] pb-[60px]">
+  <div
+    class="grid grid-cols-1 items-center gap-[34px] rounded-[26px] bg-white p-[38px] shadow-[0_1px_3px_rgba(20,24,28,.08)] min-[900px]:grid-cols-[1fr_auto_1fr]"
+  >
+    <!-- left: a normal chat app -->
+    <div>
+      <div class="mb-[14px] font-mono text-[11px] font-semibold uppercase tracking-[.6px] text-[#9AA2A9]">
+        A normal chat app
+      </div>
+      <div class="rounded-[16px] bg-[#F4F6F8] px-5 py-[18px] font-mono text-[13.5px] leading-[1.7] text-[#4F585F]">
+        "Take the Red Line from Downtown Berkeley. It departs at 9:47 from
+        Platform 2, arrives SFO 10:38, then walk 4 min to the terminal. Fare
+        $11.95…"
+      </div>
+      <div class="mt-[14px] text-[14px] text-[#7A828A]">
+        A wall of text you have to parse yourself.
+      </div>
+    </div>
+
+    <!-- center: A2UI gradient arrow badge -->
+    <div class="flex flex-col items-center justify-center gap-2">
+      <div
+        class="flex h-[44px] w-[44px] items-center justify-center rounded-[13px]"
+        style="background:linear-gradient(135deg,#0091D2,#5A4BE0); box-shadow:0 8px 20px rgba(90,75,224,.3);"
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#fff"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </div>
+      <div class="font-mono text-[10px] font-semibold tracking-[.5px] text-[#5A4BE0]">
+        A2UI
+      </div>
+    </div>
+
+    <!-- right: BayHop, a GenUI app -->
+    <div>
+      <div class="mb-[14px] font-mono text-[11px] font-semibold uppercase tracking-[.6px] text-[#5A4BE0]">
+        BayHop, a GenUI app
+      </div>
+      <div class="rounded-[16px] p-4" style="background:linear-gradient(180deg,#EFF3F5,#E5EAED);">
+        <BayHopResult variant="trip" showQuery={false} />
+      </div>
+    </div>
+  </div>
+</section>

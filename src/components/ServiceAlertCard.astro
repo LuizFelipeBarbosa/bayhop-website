@@ -1,0 +1,105 @@
+---
+// Service-alert card: a headline status for one line (tone-colored dot + text and
+// a luminance-aware line badge) plus an "ALL LINES" status list. Static port of
+// ServiceAlertCard.dc.html.
+import type { AllLine, Tone } from "../data/transit";
+import { alertDefaults, alertAllLines } from "../data/transit";
+import LineBullet from "./LineBullet.astro";
+
+interface Props {
+  line?: string;
+  color?: string;
+  status?: string;
+  tone?: "good" | "warn" | "severe";
+  note?: string;
+  updated?: string;
+  allLines?: AllLine[];
+}
+const {
+  line = alertDefaults.line,
+  color = alertDefaults.color,
+  status = alertDefaults.status,
+  tone: toneProp = alertDefaults.tone,
+  note = alertDefaults.note,
+  updated = alertDefaults.updated,
+  allLines: rawAllLines,
+} = Astro.props;
+
+const TONE: Record<Tone, { dot: string; text: string }> = {
+  good: { dot: "#2E9E5B", text: "#2E9E5B" },
+  warn: { dot: "#E8920B", text: "#B07400" },
+  severe: { dot: "#ED1C24", text: "#C81C23" },
+};
+const toneOf = (t?: string) => TONE[(t || "warn") as Tone] || TONE.warn;
+
+// Line badge owns its own contrast via WCAG relative luminance.
+function badgeText(hex: string): string {
+  const h = String(hex || "#000").replace("#", "");
+  if (h.length < 6) return "#16191C";
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) > 0.55 ? "#16191C" : "#fff";
+}
+
+const badge = badgeText(color);
+const toneObj = toneOf(toneProp);
+const raw = Array.isArray(rawAllLines) && rawAllLines.length ? rawAllLines : alertAllLines;
+const others = raw.map((a) => ({
+  name: a.name,
+  color: a.color,
+  status: a.status || "Good service",
+  ...toneOf(a.tone || "good"),
+}));
+const hasOthers = others.length > 0;
+---
+
+<div class="w-full font-sans">
+  <div
+    class="rounded-[20px] border border-[color:rgba(20,24,28,0.05)] bg-white p-[17px] shadow-[0_10px_26px_rgba(20,24,28,0.07)]"
+  >
+    <div class="flex items-center gap-2.5">
+      <div
+        class="rounded-[8px] px-[11px] py-[5px] text-[12px] font-bold"
+        style={`background:${color}; color:${badge};`}
+      >
+        {line} Line
+      </div>
+      <div class="inline-flex items-center gap-[7px]">
+        <span class="h-[9px] w-[9px] rounded-full" style={`background:${toneObj.dot};`}></span>
+        <span class="text-[15px] font-bold" style={`color:${toneObj.text};`}>{status}</span>
+      </div>
+    </div>
+    <div class="mt-[13px] text-pretty text-[14.5px] leading-[1.5] text-slate-700">{note}</div>
+    <div class="mt-[14px] flex items-center gap-[7px] font-mono text-[11px] text-slate-300">
+      <span class="h-[7px] w-[7px] rounded-full animate-bh-live" style="background:#2E9E5B;"></span>
+      Updated {updated}
+    </div>
+  </div>
+
+  {
+    hasOthers && (
+      <>
+        <div class="mt-[18px] mb-[2px] pl-1 text-[11px] font-bold tracking-[.4px] text-slate-300">
+          ALL LINES
+        </div>
+        <div class="mt-2 overflow-hidden rounded-[18px] border border-[color:rgba(20,24,28,0.05)] bg-white shadow-[0_6px_18px_rgba(20,24,28,0.05)]">
+          {others.map((a) => (
+            <div class="flex items-center gap-[11px] border-t border-[color:rgba(20,24,28,0.05)] px-[14px] py-3">
+              <div class="flex-1">
+                <LineBullet label={a.name} color={a.color} variant="swatch" />
+              </div>
+              <div class="flex items-center gap-[6px]">
+                <span class="h-[7px] w-[7px] rounded-full" style={`background:${a.dot};`} />
+                <span class="text-[12.5px] font-medium" style={`color:${a.text};`}>
+                  {a.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+    )
+  }
+</div>

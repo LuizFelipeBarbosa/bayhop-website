@@ -1,0 +1,51 @@
+---
+// Transit line bullet. Component owns contrast: given a line color it picks a
+// legible text color (WCAG relative luminance). Port of LineBullet.dc.html.
+interface Props {
+  label?: string;
+  color?: string;
+  variant?: "pill" | "swatch" | "dot";
+}
+const { label = "Red", color = "#ED1C24", variant = "pill" } = Astro.props;
+
+function textOn(hex: string): string {
+  const h = String(hex || "#000").replace("#", "");
+  if (h.length < 6) return "#fff";
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L > 0.55 ? "#16191C" : "#ffffff";
+}
+const textColor = textOn(color);
+---
+
+<span class="inline-flex items-center gap-2 font-sans leading-none">
+  {
+    variant === "pill" && (
+      <span
+        class="min-w-[46px] rounded-[7px] px-1.5 py-1 text-center text-[11px] font-bold tracking-[.2px]"
+        style={`background:${color}; color:${textColor};`}
+      >
+        {label}
+      </span>
+    )
+  }
+  {
+    variant === "swatch" && (
+      <>
+        <span class="h-[13px] w-[13px] flex-none rounded-[4px]" style={`background:${color};`} />
+        <span class="text-[14px] font-semibold text-ink">{label}</span>
+      </>
+    )
+  }
+  {
+    variant === "dot" && (
+      <>
+        <span class="h-[11px] w-[11px] flex-none rounded-full" style={`background:${color};`} />
+        <span class="text-[13px] font-semibold text-ink">{label}</span>
+      </>
+    )
+  }
+</span>

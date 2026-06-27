@@ -1,0 +1,41 @@
+---
+// Dark footer band: gradient hop logo + wordmark + tagline on the left,
+// build credits and data attribution on the right.
+// Port of the FOOTER block from `BayHop Site.dc.html`.
+---
+
+<footer class="bg-ink text-dark-muted">
+  <div
+    class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-6 px-8 py-[50px]"
+  >
+    <!-- left: logo + wordmark + tagline -->
+    <div class="flex items-center gap-3">
+      <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="footHop" x1="14" y1="30" x2="86" y2="66" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#19A9E8"></stop>
+            <stop offset="1" stop-color="#7E6FF0"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M22 64 Q50 -2 78 64" fill="none" stroke="url(#footHop)" stroke-width="9" stroke-linecap="round"></path>
+        <circle cx="22" cy="64" r="9" fill="#ffffff"></circle>
+        <circle cx="78" cy="64" r="9" fill="#ffffff"></circle>
+      </svg>
+      <div>
+        <div class="font-display text-[17px] font-bold tracking-[-.5px] text-dark-text">
+          Bay<span
+            style="background:linear-gradient(105deg,#19A9E8,#7E6FF0); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;"
+            >Hop</span
+          >
+        </div>
+        <div class="text-[12px]">Generative UI for Bay Area transit &amp; discovery</div>
+      </div>
+    </div>
+
+    <!-- right: credits + data attribution -->
+    <div class="text-right text-[12.5px] leading-[1.7]">
+      Built on the GenUI Hackathon Starter · <span class="text-dark-lilac">genui</span> + Flutter<br />
+      Transit data © BART &amp; 511 SF Bay · Map tiles © OpenStreetMap · Places © Google
+    </div>
+  </div>
+</footer>

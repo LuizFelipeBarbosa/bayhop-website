@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/* ============================================================
+   BayHop design tokens (Tailwind v4 @theme)
+   - Fonts:  font-display / font-sans / font-mono
+   - Lines:  bg-line-red / text-line-blue / ...
+   - Brand:  brand-blue / brand-purple
+   - Anim:   animate-bh-live / animate-bh-float / ...
+   Use arbitrary-value utilities (e.g. text-[18.5px], text-[#4F585F])
+   for exact one-off design values not tokenized here.
+   ============================================================ */
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* surfaces */
+  --color-ink: #16191c;
+  --color-mist: #eef2f4;
+
+  /* transit line palette */
+  --color-line-red: #ed1c24;
+  --color-line-yellow: #ffc72c;
+  --color-line-orange: #f4922a;
+  --color-line-green: #4db848;
+  --color-line-blue: #0091d2;
+  --color-line-caltrain: #9b2d3a;
+
+  /* brand / AI gradient endpoints */
+  --color-brand-blue: #0091d2;
+  --color-brand-purple: #5a4be0;
+
+  /* light-section neutrals */
+  --color-slate-900: #16191c;
+  --color-slate-700: #39424a;
+  --color-slate-600: #4f585f;
+  --color-slate-500: #59626a;
+  --color-slate-400: #7a828a;
+  --color-slate-300: #9aa2a9;
+
+  /* dark-section neutrals */
+  --color-dark-text: #edf1f3;
+  --color-dark-muted: #a3abb2;
+  --color-dark-purple: #8e83f0;
+  --color-dark-blue: #4fb3e8;
+  --color-dark-faint: #7e8893;
+  --color-dark-lilac: #c9cdf6;
+
+  /* keyframe-backed animation tokens */
+  --animate-bh-live: bh-live 1.4s ease-in-out infinite;
+  --animate-bh-float: bh-float 6s ease-in-out infinite;
+  --animate-bh-spark: bh-spark 1.6s ease-in-out infinite;
+  --animate-bh-pulse: bh-pulse 2.6s ease-out infinite;
+  --animate-bh-shim: bh-shim 1.25s ease-in-out infinite;
+}
+
+/* keyframes (plain CSS so they are always emitted) */
+@keyframes bh-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .28; transform: scale(.78); }
+}
+@keyframes bh-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes bh-spark {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(.9); opacity: .84; }
+}
+@keyframes bh-pulse {
+  0% { transform: scale(.5); opacity: .5; }
+  70% { transform: scale(3); opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes bh-shim {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* base resets (mirror the DC document) */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+::selection { background: rgba(90, 75, 224, .18); }
+
+/* ---- reusable helpers for repeated complex patterns ---- */
+
+/* blue -> purple AI text gradient (background-clip:text) */
+.text-gradient {
+  background: linear-gradient(105deg, #0091d2, #5a4be0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* blue -> purple AI fill gradient (135deg) */
+.ai-gradient {
+  background: linear-gradient(135deg, #0091d2, #5a4be0);
+}
+
+/* hide scrollbars inside the phone mockup */
+.no-scrollbar::-webkit-scrollbar { width: 0; height: 0; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* shimmering skeleton block (generating beat) */
+.bh-skeleton {
+  background: linear-gradient(90deg, #e7ebee 25%, #f5f8f9 37%, #e7ebee 63%);
+  background-size: 200% 100%;
+  animation: bh-shim 1.25s ease-in-out infinite;
+}

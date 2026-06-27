@@ -1,0 +1,64 @@
+---
+// "The BayHop design system" — atoms (LineBullet, JourneyStrip) and two
+// generated cards (departures + alert) framed in gradient panels.
+// Port of the DESIGN SYSTEM block from `BayHop Site.dc.html`.
+import LineBullet from "../LineBullet.astro";
+import JourneyStrip from "../JourneyStrip.astro";
+import BayHopResult from "../BayHopResult.astro";
+import { directSeg, changeSeg } from "../../data/transit";
+---
+
+<section class="mx-auto max-w-[1180px] px-8 pt-[30px] pb-[70px]">
+  <div class="mb-4 font-mono text-[11.5px] font-semibold uppercase tracking-[.7px] text-brand-purple">
+    The BayHop design system
+  </div>
+  <h2 class="m-0 mb-[14px] max-w-[680px] font-display text-[42px] font-bold leading-[1.08] tracking-[-1px]">
+    Atoms compose into cards the model can request.
+  </h2>
+  <p class="m-0 mb-[40px] max-w-[640px] text-[17px] leading-[1.6] text-slate-600">
+    A fixed palette, transit-line bullets, a blue→purple AI gradient, and Space
+    Grotesk / Hanken Grotesk / JetBrains Mono type. The same tokens render every
+    generated card.
+  </p>
+
+  <!-- atoms: LineBullet + JourneyStrip -->
+  <div class="mb-6 grid grid-cols-1 gap-6 min-[900px]:grid-cols-2">
+    <div class="rounded-[22px] bg-white p-[28px] shadow-[0_1px_3px_rgba(20,24,28,.08)]">
+      <div class="mb-[18px] font-mono text-[11px] font-semibold tracking-[.4px] text-slate-700">
+        LineBullet — auto-contrast transit lines
+      </div>
+      <div class="mb-[18px] flex flex-wrap items-center gap-[10px]">
+        <LineBullet label="Red" color="#ED1C24" variant="pill" />
+        <LineBullet label="Yellow" color="#FFC72C" variant="pill" />
+        <LineBullet label="Blue" color="#0091D2" variant="pill" />
+        <LineBullet label="Green" color="#4DB848" variant="pill" />
+        <LineBullet label="Orange" color="#F4922A" variant="pill" />
+      </div>
+      <div class="flex flex-wrap items-center gap-[22px]">
+        <LineBullet label="Caltrain" color="#9B2D3A" variant="swatch" />
+        <LineBullet label="N Judah" color="#005B9A" variant="dot" />
+        <LineBullet label="T Third" color="#D31245" variant="dot" />
+      </div>
+    </div>
+
+    <div class="rounded-[22px] bg-white p-[28px] shadow-[0_1px_3px_rgba(20,24,28,.08)]">
+      <div class="mb-[22px] font-mono text-[11px] font-semibold tracking-[.4px] text-slate-700">
+        JourneyStrip — segments · transfers · walk legs
+      </div>
+      <div class="flex flex-col gap-[22px]">
+        <JourneyStrip segments={directSeg} startColor="#ED1C24" endColor="#ED1C24" size="lg" />
+        <JourneyStrip segments={changeSeg} startColor="#ED1C24" endColor="#FFC72C" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <!-- generated cards framed in gradient panels -->
+  <div class="grid grid-cols-1 gap-6 min-[900px]:grid-cols-2">
+    <div class="rounded-[22px] p-[18px]" style="background:linear-gradient(180deg,#EFF3F5,#E5EAED);">
+      <BayHopResult variant="departures" showQuery={false} />
+    </div>
+    <div class="rounded-[22px] p-[18px]" style="background:linear-gradient(180deg,#EFF3F5,#E5EAED);">
+      <BayHopResult variant="alert" showQuery={false} />
+    </div>
+  </div>
+</section>

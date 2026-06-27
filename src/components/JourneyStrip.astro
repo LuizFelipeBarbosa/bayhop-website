@@ -1,0 +1,83 @@
+---
+// Horizontal journey timeline: walk legs (dotted), ride segments (solid bars),
+// transfer nodes, and start/end nodes. Port of JourneyStrip.dc.html.
+import type { Seg } from "../data/transit";
+
+interface Props {
+  segments?: Seg[];
+  startColor?: string;
+  endColor?: string;
+  walkStart?: string;
+  walkEnd?: string;
+  size?: "sm" | "lg";
+  showWalkLabels?: boolean;
+}
+const {
+  segments: rawSegments,
+  startColor: startColorProp,
+  endColor: endColorProp,
+  walkStart = "3",
+  walkEnd = "4",
+  size = "lg",
+  showWalkLabels = true,
+} = Astro.props;
+
+const big = size === "lg";
+const dims = big
+  ? { walk: 18, node: 13, nodeBorder: 3.5, tNode: 14, tBorder: 3, bar: 9 }
+  : { walk: 12, node: 10, nodeBorder: 3, tNode: 11, tBorder: 2.5, bar: 7 };
+
+const raw = Array.isArray(rawSegments) && rawSegments.length ? rawSegments : [{ color: "#ED1C24", weight: 1 }];
+const segments = raw.map((s) => ({
+  color: s.color || "#ED1C24",
+  weight: s.weight == null ? 1 : s.weight,
+  transfer: !!s.transfer,
+  dashed: s.kind === "walk" || !!s.dashed,
+  solid: !(s.kind === "walk" || s.dashed),
+}));
+const startColor = startColorProp || segments[0].color;
+const endColor = endColorProp || segments[segments.length - 1].color;
+---
+
+<div class="w-full">
+  <div class="flex items-center">
+    <div class="h-0 flex-none" style={`width:${dims.walk}px; border-top:2.5px dotted #B4BCC2;`}></div>
+    <div
+      class="z-[1] flex-none rounded-full bg-white"
+      style={`width:${dims.node}px; height:${dims.node}px; border:${dims.nodeBorder}px solid ${startColor};`}
+    >
+    </div>
+    {
+      segments.map((seg) => (
+        <>
+          {seg.transfer && (
+            <div
+              class="z-[1] flex-none rounded-full bg-white"
+              style={`width:${dims.tNode}px; height:${dims.tNode}px; border:${dims.tBorder}px solid #2A3036; margin:0 -3px;`}
+            />
+          )}
+          {seg.dashed && (
+            <div class="h-0" style={`flex:${seg.weight}; border-top:${dims.bar}px dotted ${seg.color}; margin:0 1px;`} />
+          )}
+          {seg.solid && (
+            <div style={`flex:${seg.weight}; height:${dims.bar}px; background:${seg.color}; border-radius:6px; margin:0 -2px;`} />
+          )}
+        </>
+      ))
+    }
+    <div
+      class="z-[1] flex-none rounded-full bg-white"
+      style={`width:${dims.node}px; height:${dims.node}px; border:${dims.nodeBorder}px solid ${endColor};`}
+    >
+    </div>
+    <div class="h-0 flex-none" style={`width:${dims.walk}px; border-top:2.5px dotted #B4BCC2;`}></div>
+  </div>
+  {
+    showWalkLabels && (
+      <div class="mt-[7px] flex justify-between font-mono text-[10px] text-[#9AA2A9]">
+        <span>walk {walkStart}m</span>
+        <span>walk {walkEnd}m</span>
+      </div>
+    )
+  }
+</div>

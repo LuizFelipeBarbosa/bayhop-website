@@ -1,0 +1,82 @@
+---
+// Landing hero: eyebrow pill, gradient headline, lead, CTAs, stat row, and the
+// floating phone mockup. Port of the HERO block in `BayHop Site.dc.html`.
+import { heroStats, GITHUB_URL } from "../../data/site";
+import PhoneMockup from "../PhoneMockup.astro";
+---
+
+<section
+  class="relative mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-[48px] px-[32px] pt-[74px] pb-[40px] lg:grid-cols-[1fr_420px]"
+>
+  <!-- left: copy -->
+  <div>
+    <!-- eyebrow pill -->
+    <div
+      class="mb-[24px] inline-flex items-center gap-[9px] rounded-full border border-[rgba(90,75,224,0.16)] bg-[rgba(90,75,224,0.09)] px-[13px] py-[7px]"
+    >
+      <span
+        class="h-[7px] w-[7px] flex-none rounded-full bg-[#2E9E5B] shadow-[0_0_0_3px_rgba(46,158,91,0.18)] animate-bh-live"
+      ></span>
+      <span class="font-mono text-[11.5px] font-semibold uppercase tracking-[0.6px] text-brand-purple">
+        Generative UI · Bay Area transit
+      </span>
+    </div>
+
+    <!-- headline -->
+    <h1
+      class="m-0 mb-[22px] font-display text-[40px] font-bold leading-[1.05] tracking-[-1.6px] sm:text-[60px] sm:leading-[1.02]"
+    >
+      The assistant answers in <span class="text-gradient">interface</span>, not text.
+    </h1>
+
+    <!-- lead -->
+    <p class="m-0 mb-[30px] max-w-[540px] text-[18.5px] leading-[1.55] text-slate-600 [text-wrap:pretty]">
+      Ask <i>"Downtown Berkeley → SFO, leave now"</i> and a language model streams back real Flutter cards
+      — trip plans, live departure boards, place lists, service alerts — rendered live on top of an interactive
+      map.
+    </p>
+
+    <!-- CTAs -->
+    <div class="mb-[30px] flex flex-wrap gap-[13px]">
+      <a
+        href={GITHUB_URL}
+        class="ai-gradient flex items-center gap-[9px] rounded-[13px] px-[22px] py-[14px] text-[15px] font-semibold text-white no-underline shadow-[0_10px_26px_rgba(90,75,224,0.28)] transition hover:brightness-[1.06]"
+      >
+        Get the source ↗
+      </a>
+      <a
+        href="#engine"
+        class="flex items-center gap-[9px] rounded-[13px] border border-[rgba(20,24,28,0.06)] bg-white px-[22px] py-[14px] text-[15px] font-semibold text-ink no-underline shadow-[0_1px_3px_rgba(20,24,28,0.1)] transition hover:bg-[#F6F9FA]"
+      >
+        See how it works
+      </a>
+    </div>
+
+    <!-- stats -->
+    <div class="flex flex-wrap items-center gap-[24px]">
+      {
+        heroStats.map((s) => (
+          <div>
+            <div class="font-display text-[26px] font-bold tracking-[-0.5px]">{s.k}</div>
+            <div class="text-[12.5px] font-medium text-slate-400">{s.v}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- right: floating phone -->
+  <div
+    class="relative origin-top scale-[0.8] justify-self-center sm:scale-[0.92] lg:scale-100"
+  >
+    <div
+      class="absolute top-[-40px] right-[-30px] bottom-[-40px] left-[-30px]"
+      style="background:radial-gradient(60% 50% at 60% 30%, rgba(90,75,224,.16), transparent 70%); filter:blur(10px);"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="relative animate-bh-float">
+      <PhoneMockup initialCard="trip" />
+    </div>
+  </div>
+</section>

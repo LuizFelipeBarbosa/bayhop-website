@@ -1,0 +1,324 @@
+---
+// Trip planner card: a featured (selected) route with a collapsible step-by-step
+// timeline, plus a list of alternative routes. Port of TripPlanCard.dc.html.
+//
+// The card owns presentation: a generative layer emits semantic steps
+// ({kind:'walk'|'board'|'ride'|'change', ...}); we map kind -> styling here.
+// Interactivity (expand/collapse + picking an alternative as the new featured
+// route) is handled by a scoped vanilla <script>. Every route is pre-rendered as
+// a "variant" and visibility is swapped on interaction, so JourneyStrip and all
+// markup stay pixel-faithful and there is a graceful no-JS fallback.
+import type { Route, Step } from "../data/transit";
+import { tripRoutes } from "../data/transit";
+import JourneyStrip from "./JourneyStrip.astro";
+
+interface Props {
+  origin?: string;
+  destination?: string;
+  meta?: string;
+  routes?: Route[];
+}
+const {
+  origin = "Downtown Berkeley",
+  destination = "SFO",
+  meta,
+  routes: routesProp,
+} = Astro.props;
+
+const routes: Route[] = Array.isArray(routesProp) && routesProp.length ? routesProp : tripRoutes;
+const resolvedMeta = meta ?? `${routes.length} routes · leave now · BART`;
+
+// kind -> styling (verbatim from DC _styleStep).
+interface StepStyle {
+  railBg: string;
+  nodeSize: number;
+  nodeFill: string;
+  nodeBorder: string;
+}
+function styleStep(st: Step): Step & StepStyle {
+  const c = st.color || "#ED1C24";
+  const dashed = "repeating-linear-gradient(#C6CDD2 0 5px, transparent 5px 10px)";
+  let s: StepStyle;
+  if (st.kind === "walk") s = { railBg: dashed, nodeSize: 11, nodeFill: "#fff", nodeBorder: "#AAB2B8" };
+  else if (st.kind === "change") s = { railBg: dashed, nodeSize: 14, nodeFill: "#fff", nodeBorder: "#2A3036" };
+  else if (st.kind === "ride") s = { railBg: c, nodeSize: 0, nodeFill: "transparent", nodeBorder: "transparent" };
+  else s = { railBg: c, nodeSize: 14, nodeFill: "#fff", nodeBorder: c };
+  return { ...st, ...s };
+}
+
+// Defaults merged into each route's featured view (verbatim from DC renderVals).
+const FEATURED_DEFAULTS = {
+  badge: "Fastest",
+  fare: "",
+  total: "0",
+  depart: "",
+  arrive: "",
+  changes: "Direct",
+  crowd: "",
+  walkStart: "3",
+  walkEnd: "4",
+  startColor: "#ED1C24",
+  endColor: "#ED1C24",
+  segments: [{ color: "#ED1C24", weight: 1 }],
+};
+
+// One featured view per route (used when that route is the selected one).
+const featuredViews = routes.map((r) => ({
+  ...FEATURED_DEFAULTS,
+  ...r,
+  steps: (r.steps || []).map(styleStep),
+}));
+
+// One "more routes" list per selected index (everything except the selected one).
+const moreLists = routes.map((_, selIdx) =>
+  routes.map((r, i) => ({ r, i })).filter((x) => x.i !== selIdx),
+);
+const hasMore = routes.length > 1;
+---
+
+<div data-trip-card data-selected="0" data-expanded="false" class="font-sans w-full">
+  <div class="flex items-start justify-between mb-[13px]">
+    <div>
+      <div class="font-display font-bold text-[20px] text-ink tracking-[-.2px]">
+        {origin} <span class="text-[#BAC1C7]">→</span> {destination}
+      </div>
+      <div class="text-[12px] text-[#7A828A] mt-[2px]">{resolvedMeta}</div>
+    </div>
+  </div>
+
+  {/* featured route — one pre-rendered variant per route, only the selected one shown */}
+  <div data-featured-wrap>
+    {
+      featuredViews.map((f, idx) => (
+        <div data-featured-variant data-idx={idx} class={idx === 0 ? "" : "hidden"}>
+          <div
+            data-featured-card
+            role="button"
+            tabindex="0"
+            aria-expanded="false"
+            aria-label="Show step-by-step directions"
+            class="bg-white rounded-[22px] pt-4 px-4 pb-[15px] cursor-pointer"
+            style="border:1px solid rgba(20,24,28,.05); box-shadow:0 1px 0 rgba(20,24,28,.03), 0 10px 26px rgba(20,24,28,.07);"
+          >
+            <div class="flex items-center justify-between">
+              <div class="inline-flex items-center gap-1.5 bg-ink text-white text-[11px] font-semibold px-2.5 py-1 rounded-full tracking-[.2px]">
+                {f.badge}
+              </div>
+              <div class="font-mono font-semibold text-[14px] text-ink">{f.fare}</div>
+            </div>
+
+            <div class="flex items-end gap-[11px] mt-[11px]">
+              <div class="font-display font-bold text-[48px] leading-[.85] text-ink tracking-[-1.5px]">
+                {f.total}
+              </div>
+              <div class="pb-[5px]">
+                <div class="text-[13px] font-semibold text-ink">min</div>
+                <div class="font-mono text-[12px] text-[#7A828A] mt-px">
+                  {f.depart}
+                  <span class="text-[#BAC1C7]"> → </span>
+                  {f.arrive}
+                </div>
+              </div>
+              <div class="flex-1" />
+              <div class="text-right pb-[3px]">
+                <div class="text-[12.5px] text-[#39424A] font-semibold">{f.changes}</div>
+                <div class="text-[11px] text-[#9AA2A9] mt-[2px]">{f.crowd}</div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <JourneyStrip
+                segments={f.segments}
+                startColor={f.startColor}
+                endColor={f.endColor}
+                walkStart={f.walkStart}
+                walkEnd={f.walkEnd}
+                size="lg"
+              />
+            </div>
+
+            <div
+              data-collapsed-hint
+              class="flex items-center justify-center gap-[5px] mt-[13px] text-[12px] text-[#0091D2] font-semibold"
+            >
+              Step-by-step
+              <svg width="11" height="7" viewBox="0 0 11 7" aria-hidden="true">
+                <path
+                  d="M1 1l4.5 4.5L10 1"
+                  fill="none"
+                  stroke="#0091D2"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+
+            <div data-expanded-steps class="hidden">
+              <div class="h-px bg-[rgba(20,24,28,0.07)] mt-[15px] mb-[14px]" />
+              {f.steps.map((st) => (
+                <div class="flex gap-[11px] min-h-[44px]">
+                  <div class="w-[42px] flex-none text-right font-mono text-[11px] font-semibold text-[#59626A] pt-px">
+                    {st.time}
+                  </div>
+                  <div class="w-[16px] flex-none relative flex justify-center">
+                    <div
+                      class="absolute top-0 bottom-0 w-[3px] rounded-[3px]"
+                      style={`background:${st.railBg};`}
+                    />
+                    <div
+                      class="relative mt-[3px] rounded-full"
+                      style={`width:${st.nodeSize}px; height:${st.nodeSize}px; background:${st.nodeFill}; border:3px solid ${st.nodeBorder};`}
+                    />
+                  </div>
+                  <div class="flex-1 pb-[15px]">
+                    <div class="font-semibold text-[14px] text-ink">{st.title}</div>
+                    <div class="text-[12.5px] text-[#7A828A] mt-[2px] [text-wrap:pretty]">{st.detail}</div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                data-hide-steps
+                class="w-full flex items-center justify-center gap-[5px] mt-[4px] text-[12px] text-[#9AA2A9] font-semibold cursor-pointer"
+              >
+                Hide steps
+                <svg width="11" height="7" viewBox="0 0 11 7" aria-hidden="true">
+                  <path
+                    d="M1 6l4.5-4.5L10 6"
+                    fill="none"
+                    stroke="#9AA2A9"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  {/* alternative routes — one pre-rendered list per selected index */}
+  {
+    hasMore && (
+      <div data-more-wrap>
+        {moreLists.map((list, selIdx) => (
+          <div data-more-variant data-idx={selIdx} class={selIdx === 0 ? "" : "hidden"}>
+            <div class="text-[11px] text-[#9AA2A9] font-bold tracking-[.4px] mt-[18px] mb-[2px] pl-[4px]">
+              MORE ROUTES
+            </div>
+            {list.map(({ r, i }) => (
+              <button
+                type="button"
+                data-pick
+                data-pick-idx={i}
+                class="flex items-center gap-[13px] p-[13px] rounded-[17px] bg-white cursor-pointer mt-[10px] w-full text-left hover:bg-[#FAFBFC]"
+                style="border:1px solid rgba(20,24,28,.05); box-shadow:0 5px 16px rgba(20,24,28,.05);"
+              >
+                <div class="text-center flex-none w-[42px]">
+                  <div class="font-display font-bold text-[27px] leading-none text-ink">{r.total}</div>
+                  <div class="text-[9.5px] text-[#9AA2A9] mt-px">min</div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <JourneyStrip
+                    segments={r.segments}
+                    startColor={r.startColor}
+                    endColor={r.endColor}
+                    size="sm"
+                    showWalkLabels={false}
+                  />
+                  <div class="mt-[7px] font-mono text-[11px] text-[#7A828A]">
+                    {r.depart} → {r.arrive} · {r.changes}
+                  </div>
+                </div>
+                <svg width="8" height="13" viewBox="0 0 8 13" class="flex-none" aria-hidden="true">
+                  <path
+                    d="M1 1l6 5.5L1 12"
+                    fill="none"
+                    stroke="#C2CACF"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  function initTripCard(root: HTMLElement) {
+    const featuredVariants = Array.from(root.querySelectorAll<HTMLElement>("[data-featured-variant]"));
+    const moreVariants = Array.from(root.querySelectorAll<HTMLElement>("[data-more-variant]"));
+
+    const getSelected = () => parseInt(root.getAttribute("data-selected") || "0", 10);
+    const isExpanded = () => root.getAttribute("data-expanded") === "true";
+
+    function render() {
+      const sel = getSelected();
+      const expanded = isExpanded();
+      featuredVariants.forEach((v) => {
+        const active = parseInt(v.getAttribute("data-idx") || "0", 10) === sel;
+        v.classList.toggle("hidden", !active);
+        const card = v.querySelector<HTMLElement>("[data-featured-card]");
+        const hint = v.querySelector<HTMLElement>("[data-collapsed-hint]");
+        const steps = v.querySelector<HTMLElement>("[data-expanded-steps]");
+        if (card) card.setAttribute("aria-expanded", active && expanded ? "true" : "false");
+        if (hint) hint.classList.toggle("hidden", expanded);
+        if (steps) steps.classList.toggle("hidden", !expanded);
+      });
+      moreVariants.forEach((v) => {
+        v.classList.toggle("hidden", parseInt(v.getAttribute("data-idx") || "0", 10) !== sel);
+      });
+    }
+
+    featuredVariants.forEach((v) => {
+      const card = v.querySelector<HTMLElement>("[data-featured-card]");
+      if (card) {
+        card.addEventListener("click", () => {
+          // DC parity: clicking the featured card only ever EXPANDS;
+          // collapse happens solely via the "Hide steps" control below.
+          root.setAttribute("data-expanded", "true");
+          render();
+        });
+        card.addEventListener("keydown", (e: KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+            e.preventDefault();
+            // DC parity: clicking the featured card only ever EXPANDS;
+          // collapse happens solely via the "Hide steps" control below.
+          root.setAttribute("data-expanded", "true");
+            render();
+          }
+        });
+      }
+      const hide = v.querySelector<HTMLElement>("[data-hide-steps]");
+      if (hide) {
+        hide.addEventListener("click", (e: Event) => {
+          e.stopPropagation();
+          root.setAttribute("data-expanded", "false");
+          render();
+        });
+      }
+    });
+
+    root.querySelectorAll<HTMLElement>("[data-pick]").forEach((btn) => {
+      btn.addEventListener("click", (e: Event) => {
+        e.stopPropagation();
+        root.setAttribute("data-selected", btn.getAttribute("data-pick-idx") || "0");
+        root.setAttribute("data-expanded", "true");
+        render();
+      });
+    });
+
+    render();
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-trip-card]").forEach(initTripCard);
+</script>

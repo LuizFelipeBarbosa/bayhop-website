@@ -1,0 +1,107 @@
+---
+// Engine (dark band): explains the GenUI pipeline — query → typed UI spec →
+// live Flutter widgets — with the pipeline cards and the two "knobs" (catalog
+// and prompt). Port of the ENGINE block in `BayHop Site.dc.html`.
+import { pipeline } from "../../data/site";
+---
+
+<section id="engine" class="bg-ink text-dark-text">
+  <div class="mx-auto max-w-[1180px] px-[32px] py-[84px]">
+    <div class="mb-4 font-mono text-[11.5px] font-semibold uppercase tracking-[.7px] text-dark-purple">
+      The GenUI engine
+    </div>
+    <h2 class="mb-4 max-w-[760px] font-display text-[42px] font-bold leading-[1.08] tracking-[-1px]">
+      A query becomes a typed UI spec — then live Flutter widgets.
+    </h2>
+    <p class="mb-[50px] max-w-[640px] text-[17px] leading-[1.6] text-dark-muted">
+      Your message goes to the model and comes back not as prose but as a
+      structured description of an interface. The <span
+        class="font-mono text-[14px] text-dark-lilac">genui</span> package
+      renders that description into widgets on screen.
+    </p>
+
+    <!-- pipeline -->
+    <div class="flex items-stretch gap-[14px] overflow-x-auto pb-2">
+      {
+        pipeline.map((p) => (
+          <div class="relative min-w-[188px] flex-1 rounded-[18px] border border-white/[0.09] bg-white/[0.04] p-5">
+            <div
+              class="mb-[10px] font-mono text-[11px] font-semibold"
+              style={`color:${p.tint};`}
+            >
+              {p.step}
+            </div>
+            <div class="mb-[7px] font-display text-[17px] font-semibold tracking-[-.3px]">
+              {p.title}
+            </div>
+            <div class="text-[13px] leading-[1.5] text-[#9AA2AA]">{p.desc}</div>
+            <div class="mt-[11px] font-mono text-[10.5px] text-[#6E7882]">
+              {p.file}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- two knobs -->
+    <div class="mt-[54px] grid grid-cols-1 gap-[22px] min-[900px]:grid-cols-2">
+      <!-- the catalog -->
+      <div class="rounded-[20px] border border-white/[0.09] bg-white/[0.04] p-[30px]">
+        <div class="mb-[14px] flex items-center gap-[11px]">
+          <div class="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-[rgba(142,131,240,.16)]">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#8E83F0"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+          </div>
+          <div class="font-display text-[20px] font-bold">The catalog</div>
+        </div>
+        <p class="m-0 text-[14.5px] leading-[1.6] text-dark-muted">
+          <i>What</i> the model can build. The model can only ever describe
+          widgets you've registered — so it can never ask for something the app
+          can't draw. BayHop ships <b class="text-dark-text">8 transit</b> and <b
+            class="text-dark-text">7 explore</b> components.
+        </p>
+      </div>
+
+      <!-- the prompt -->
+      <div class="rounded-[20px] border border-white/[0.09] bg-white/[0.04] p-[30px]">
+        <div class="mb-[14px] flex items-center gap-[11px]">
+          <div class="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-[rgba(0,145,210,.18)]">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#4FB3E8"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 6h16M4 12h16M4 18h10"></path>
+            </svg>
+          </div>
+          <div class="font-display text-[20px] font-bold">The prompt</div>
+        </div>
+        <p class="m-0 text-[14.5px] leading-[1.6] text-dark-muted">
+          <i>How</i> the model should behave — persona, tone, domain rules. One
+          system prompt per tab. Reshape most of the experience by editing just
+          the catalog and the prompt; everything else is plumbing.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

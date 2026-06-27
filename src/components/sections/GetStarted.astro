@@ -1,0 +1,55 @@
+---
+// "Build on it" — left stack rundown + right dark terminal card with the
+// run commands. Port of the GET STARTED block from `BayHop Site.dc.html`.
+import { stack } from "../../data/site";
+---
+
+<section class="mx-auto max-w-[1180px] px-8 pt-[30px] pb-20">
+  <div class="grid grid-cols-1 items-start gap-12 min-[900px]:grid-cols-2">
+    <div>
+      <div class="mb-4 font-mono text-[11.5px] font-semibold uppercase tracking-[.7px] text-brand-purple">
+        Build on it
+      </div>
+      <h2 class="m-0 mb-[18px] font-display text-[38px] font-bold leading-[1.1] tracking-[-.8px]">
+        Running in two commands.
+      </h2>
+      <p class="m-0 mb-[26px] text-[16px] leading-[1.6] text-slate-600">
+        Targets <b>macOS, iOS, Android and web</b> on the Flutter SDK shipping
+        Dart 3.12. BART real-time departures work out of the box; other keys are
+        optional.
+      </p>
+      <div class="flex flex-col gap-[14px]">
+        {
+          stack.map((t) => (
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 flex-none rounded-[2px]" style={`background:${t.c};`} />
+              <div class="text-[14.5px] text-slate-700">
+                <b class="text-ink">{t.h}</b> — {t.t}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="rounded-[20px] bg-ink px-7 py-[26px] shadow-[0_14px_40px_rgba(20,24,28,.18)]">
+      <div class="mb-5 flex gap-[7px]">
+        <span class="h-[11px] w-[11px] rounded-full bg-line-red"></span>
+        <span class="h-[11px] w-[11px] rounded-full bg-line-yellow"></span>
+        <span class="h-[11px] w-[11px] rounded-full bg-line-green"></span>
+      </div>
+      <div class="font-mono text-[13.5px] leading-[2] text-[#C7D0D6]">
+        <div><span class="text-[#6E7882]"># clone &amp; configure keys</span></div>
+        <div><span class="text-dark-purple">cp</span> .env.example .env</div>
+        <div class="mb-[14px]"><span class="text-[#6E7882]"># at minimum, set INCEPTION_API_KEY</span></div>
+        <div><span class="text-dark-purple">flutter</span> pub get</div>
+        <div><span class="text-dark-purple">flutter</span> run -d chrome \</div>
+        <div class="pl-[26px] text-dark-blue">--dart-define-from-file=.env</div>
+      </div>
+      <div class="mt-5 border-t border-white/[0.08] pt-[18px] text-[12.5px] leading-[1.6] text-dark-faint">
+        Keys are baked in as compile-time constants via <span class="font-mono text-dark-muted">--dart-define</span>
+        — they never live in source control.
+      </div>
+    </div>
+  </div>
+</section>
