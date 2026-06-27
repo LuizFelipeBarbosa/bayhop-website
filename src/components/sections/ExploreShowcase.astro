@@ -9,6 +9,7 @@ import {
   exploreCatalog,
   exploreBranches,
   explorePlaces,
+  exploreHeroImg,
 } from "../../data/site";
 ---
 
@@ -98,8 +99,15 @@ import {
           <!-- hero -->
           <div
             class="relative mx-[16px] mb-[14px] h-[118px] overflow-hidden rounded-[16px]"
-            style="background:repeating-linear-gradient(135deg,#D9C5F0,#D9C5F0 11px,#CDB6EC 11px,#CDB6EC 22px);"
+            style="background:#CDB6EC;"
           >
+            <img
+              src={exploreHeroImg}
+              alt=""
+              class="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
             <div
               class="absolute inset-0"
               style="background:linear-gradient(180deg,rgba(22,25,28,0),rgba(22,25,28,.62));"
@@ -148,12 +156,13 @@ import {
               {
                 explorePlaces.map((p) => (
                   <div class="flex items-center gap-[11px] rounded-[13px] bg-[#F7F9FA] p-[9px]">
-                    <div
-                      class="flex h-[52px] w-[52px] flex-none items-center justify-center rounded-[10px]"
-                      style="background:repeating-linear-gradient(135deg,#E2E7EA,#E2E7EA 6px,#D7DDE1 6px,#D7DDE1 12px);"
-                    >
-                      <span class="font-mono text-[8px] text-slate-300">photo</span>
-                    </div>
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      class="h-[52px] w-[52px] flex-none rounded-[10px] object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <div class="min-w-0 flex-1">
                       <div class="text-[14px] font-bold text-ink">{p.name}</div>
                       <div class="mt-[3px] flex items-center gap-[8px] text-[11.5px] text-slate-400">

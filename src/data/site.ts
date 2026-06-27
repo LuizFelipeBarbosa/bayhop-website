@@ -254,12 +254,16 @@ export interface ExplorePlace {
   rating: string;
   price: string;
   hours: string;
+  img: string;
 }
 export const explorePlaces: ExplorePlace[] = [
-  { name: "Snail Bar", rating: "4.6", price: "$$", hours: "Open · til 11pm" },
-  { name: "Kingston 11", rating: "4.5", price: "$$", hours: "Open · til 10pm" },
-  { name: "Tara’s Organic", rating: "4.7", price: "$", hours: "Closes 9pm" },
+  { name: "Snail Bar", rating: "4.6", price: "$$", hours: "Open · til 11pm", img: "/img/explore/snail-bar.jpg" },
+  { name: "Kingston 11", rating: "4.5", price: "$$", hours: "Open · til 10pm", img: "/img/explore/kingston-11.jpg" },
+  { name: "Tara’s Organic", rating: "4.7", price: "$", hours: "Closes 9pm", img: "/img/explore/taras-organic.jpg" },
 ];
+
+// hero image for the generated Explore surface
+export const exploreHeroImg = "/img/explore/oakland-hero.jpg";
 
 export interface StackItem {
   h: string;
