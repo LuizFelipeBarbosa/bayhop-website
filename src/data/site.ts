@@ -292,3 +292,4 @@ export const navLinks: NavLink[] = [
 ];
 
 export const GITHUB_URL = "https://github.com/LuizFelipeBarbosa/flutter-gen-ui";
+export const DEMO_URL = "https://bayhopapp.netlify.app/";
